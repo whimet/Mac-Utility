@@ -1,0 +1,18 @@
+#! /bin/sh
+
+proxy_host=10.18.2.82
+#proxy_host=192.168.1.1
+cd ~/.subversion
+if [ "$(reachable $proxy_host)" == "no" ];then
+	grep telstra servers > /dev/null
+	if [ "$?" == "0" ];then
+		rm servers
+		ln -s servers_default servers
+	fi
+else
+	grep telstra servers > /dev/null
+	if [ "$?" == "1" ];then
+		rm servers
+		ln -s servers_in_office servers
+	fi
+fi
