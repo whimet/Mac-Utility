@@ -1,0 +1,36 @@
+#! /bin/sh
+
+networkservice=Wi-Fi
+command=$1
+
+local_ip=localhost
+local_port=9999
+
+office_ip=10.18.0.254
+telstra_ip=10.18.2.82
+
+squid_port=3128
+
+if [ "$command" == "" ]; then
+	echo Http Proxy: 
+	networksetup -getwebproxy $networkservice | sed 's/\(^.*\)/  \1/g'
+	echo Https Proxy: 
+	networksetup -getsecurewebproxy $networkservice | sed 's/\(^.*\)/  \1/g'
+	echo Socks Proxy:
+	networksetup -getsocksfirewallproxy $networkservice | sed 's/\(^.*\)/  \1/g'
+elif [ "$command" == "clean" ]; then
+	sudo networksetup -setwebproxy $networkservice empty
+	sudo networksetup -setsecurewebproxy $networkservice empty
+        sudo networksetup -setwebproxystate $networkservice off
+        sudo networksetup -setsecurewebproxystate $networkservice off
+	sudo networksetup -setsocksfirewallproxy $networkservice empty
+	sudo networksetup -setsocksfirewallproxystate $networkservice off
+elif [ "$command" == "local" ]; then
+	sudo networksetup -setsocksfirewallproxy $networkservice $local_ip $local_port
+elif [ "$command" == "office" ]; then
+        sudo networksetup -setwebproxy $networkservice $office_ip $squid_port
+        sudo networksetup -setsecurewebproxy $networkservice $office_ip $squid_port
+elif [ "$command" == "telstra" ]; then
+        sudo networksetup -setwebproxy $networkservice $telstra_ip $squid_port
+        sudo networksetup -setsecurewebproxy $networkservice $telstra_ip $squid_port
+fi
