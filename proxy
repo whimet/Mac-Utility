@@ -40,4 +40,5 @@ elif [ "$command" == "telstra" ]; then
 	clean_proxy
         sudo networksetup -setwebproxy $networkservice $telstra_ip $squid_port
         sudo networksetup -setsecurewebproxy $networkservice $telstra_ip $squid_port
+        sudo networksetup -setproxybypassdomains $networkservice localhost 127.0.0.1 10.18/16
 fi
